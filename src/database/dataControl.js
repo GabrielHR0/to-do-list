@@ -45,18 +45,22 @@ class DataControl{
     }
 
     async create(table, data){
-        const keys = Object.keys(data);
-        const values = Object.values(data);
+        const insertData = { ...data };
+        if (insertData.id === null || insertData.id === undefined) delete insertData.id;
+        console.log(insertData);
+        const keys = Object.keys(insertData);
+        const values = Object.values(insertData);
         const placeHolders = keys.map(() => `?`).join(', ');
 
         const dml = `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${placeHolders})`;
-        const result = await db.run(dml, values);
+        const result = await db.runAsync(dml, values);
 
-        return { ...data };
+        return { id: result.lastID, ...insertData };
+
     }
 
     async delete(table, id){
-        await db.run(`DELETE FROM ${table} WHERE id = ?`, [id]);
+        await db.runAsync(`DELETE FROM ${table} WHERE id = ?`, [id]);
         return true;
     }
 
@@ -68,7 +72,7 @@ class DataControl{
         const values = [ ...Object.values(data), id];
 
         const dml = `UPDATE ${table} SET ${setClause} WHERE id = ?`;
-        await db.run(dml, values)
+        await db.runAsync(dml, values)
 
         return this.findById(table, id);
     }

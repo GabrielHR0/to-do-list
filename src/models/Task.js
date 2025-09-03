@@ -2,20 +2,19 @@ const ObjectControl = require('../database/objectControl');
 
 class Task extends ObjectControl{
 
+  static table = 'tasks';
+
   constructor(id, title, description, status, dueDate, endDate, taskListId) {
-    super('tasks')
+    super();
     this.id = id;
     this.title = title;
     this.description = description;
-    this.status = status;
+    this.status = ['pending, completed, orverdue, canceled'].includes(status) ? status : 'pending';
     this.dueDate = dueDate;
     this.endDate = endDate;
     this.taskListId = taskListId;
   }
 
-  async create(data){
-    return await super.create(data);
-  }
 
 }
 

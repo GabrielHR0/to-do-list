@@ -2,15 +2,15 @@ const ObjectControl = require('../database/objectControl');
 
 class taskOrder extends ObjectControl{
 
-    constructor(taskListId, taskId, position) {
-        super('taskOrders')
+    constructor(taskListId, position = 0) {
+        super();
         this.taskListId = taskListId;
-        this.taskId = taskId;
+        this.taskId;
         this.position = position;
     }
 
-    async create(data){
-        return await super.create(data);
+    async concatenate(){
+        this.position += 1
     }
 
 }

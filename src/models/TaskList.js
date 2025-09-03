@@ -2,15 +2,11 @@ const ObjectControl = require('../database/objectControl');
 
 class TaskList extends ObjectControl{
 
-  constructor(id, title, userId) {
-    super('tasksLists')
-    this.id = id;
+  constructor(title, userId) {
+    super();
+    this.id;
     this.title = title;
     this.userId = userId;
-  }
-
-  async create(data){
-    return await super.create(data);
   }
 
 }

@@ -1,31 +1,56 @@
 {
   "users": {
-    "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-    "email": "TEXT NOT NULL UNIQUE",
-    "password": "TEXT NOT NULL"
+    "columns": {
+      "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
+      "email": "TEXT NOT NULL UNIQUE",
+      "password": "TEXT NOT NULL"
+    }
   },
   "taskLists": {
-    "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-    "title": "TEXT NOT NULL",
-    "userId": "INTEGER NOT NULL",
-    "taskOrder": "TEXT",
-    "FOREIGN KEY(userId)": "REFERENCES users(id)"
+    "columns": {
+      "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
+      "title": "TEXT NOT NULL",
+      "userId": "INTEGER NOT NULL"
+    },
+    "foreignKeys": [
+      {"column": "userId", "references": "users(id)"}
+    ]
   },
   "tasks": {
-    "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-    "title": "TEXT NOT NULL",
-    "description": "TEXT",
-    "status": "TEXT NOT NULL",
-    "dueDate": "TEXT",
-    "endDate": "TEXT",
-    "taskListId": "INTEGER NOT NULL",
-    "FOREIGN KEY(taskListId)": "REFERENCES taskLists(id)"
+    "columns": {
+      "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
+      "title": "TEXT NOT NULL",
+      "description": "TEXT",
+      "status": "TEXT NOT NULL",
+      "dueDate": "TEXT",
+      "endDate": "TEXT",
+      "taskListId": "INTEGER NOT NULL"
+    },
+    "foreignKeys": [
+      {"column": "taskListId", "references": "taskLists(id)"}
+    ]
   },
   "steps": {
-    "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-    "title": "TEXT NOT NULL",
-    "status": "TEXT NOT NULL",
-    "taskId": "INTEGER NOT NULL",
-    "FOREIGN KEY(taskId)": "REFERENCES tasks(id)"
+    "columns": {
+      "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
+      "title": "TEXT NOT NULL",
+      "status": "TEXT NOT NULL",
+      "taskId": "INTEGER NOT NULL"
+    },
+    "foreignKeys": [
+      {"column": "taskId", "references": "tasks(id)"}
+    ]
+  },
+  "taskOrder": {
+    "columns": {
+      "taskListId": "INTEGER NOT NULL",
+      "taskId": "INTEGER NOT NULL",
+      "position": "INTEGER NOT NULL"
+    },
+    "primaryKey": ["taskListId", "taskId"],
+    "foreignKeys": [
+      {"column": "taskListId", "references": "taskLists(id)"},
+      {"column": "taskId", "references": "tasks(id)"}
+    ]
   }
 }
