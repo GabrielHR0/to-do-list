@@ -3,6 +3,7 @@ const Task = require('../models/Task');
 const TaskOrder = require('../models/TaskOrder');
 const TaskController = require('./TaskController');
 const TaskList = require('../models/TaskList');
+const taskOrder = require('../models/TaskOrder');
 
 const ListController = {
 
@@ -80,6 +81,20 @@ const ListController = {
         } catch (error) {
             res.status(500).json({error: error.message});
         }
+    },
+
+    async switchTaskOrder(req, res){
+        const { firstTask,  secondTask, taskListId } = req.body;
+        const firstOrder = await taskOrder.findOne({taskId: firstTask, taskListId},[position]);
+        const secondOrder = await taskOrder.findOne({taskId: secondTask, taskListId}, [position]);
+
+        console.log("first, second:", firstOrder, secondOrder);
+        if(!firstOrder || !secondOrder){
+            return res.status(404).json({message: "Tasks not found"});
+        }
+
+        TaskOrder.update({taskId: firstTask, taskListId}, {position: secondOrder.position});
+        TaskOrder.update({taskId: secondTask, taskListId}, {position: firstOrder.position});
     },
 
     async deleteList(req, res) {

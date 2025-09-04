@@ -1,3 +1,4 @@
+const Step = require('../models/Step');
 const Task = require('../models/Task');
 const TaskList = require('../models/TaskList');
 const TaskOrder = require('../models/TaskOrder');
@@ -54,7 +55,21 @@ const TaskController = {
         task.setStatus('pending');
         task.setEndDate( null );
         res.status(200).json(task);
-    }
+    },
+
+    async addStep(req, res){
+        const { title, status, taskId } = req.body;
+        
+        const task = await Task.findOne({id: taskId});
+
+        if(!task){
+            return res.status(404).json({message: "Task not found"});
+        }
+        const step = new Step(title, status, taskId);
+        await Step.create(step);
+        
+    }  
+
 };
 
 module.exports = TaskController;

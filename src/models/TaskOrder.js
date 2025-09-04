@@ -2,7 +2,7 @@ const ObjectControl = require('../database/objectControl');
 
 class taskOrder extends ObjectControl{
 
-    static table = 'taskOrder';
+    static table = 'taskOrders';
 
     constructor(data) {
         super();
