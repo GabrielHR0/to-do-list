@@ -47,7 +47,7 @@
       "taskId": "INTEGER NOT NULL",
       "position": "INTEGER NOT NULL"
     },
-    "primaryKey": ["taskListId", "taskId"],
+    "primaryKey": ["taskListId", "taskId", "position"],
     "foreignKeys": [
       {"column": "taskListId", "references": "taskLists(id)"},
       {"column": "taskId", "references": "tasks(id)"}

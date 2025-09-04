@@ -17,8 +17,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
 });
 
-db.all = promisify(db.all).bind(db);
-db.get = promisify(db.get).bind(db);
+db.getAsync = promisify(db.get.bind(db));
+db.allAsync = promisify(db.all.bind(db));
 db.runAsync = function(sql, params = []) {
   return new Promise((resolve, reject) => {
     db.run(sql, params, function(err) {

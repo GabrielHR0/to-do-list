@@ -2,7 +2,7 @@ const db = require('../config/database');
 
 class DataControl{
 
-    async find(table, conditions = {}, orderBy = 'id DESC', projection = ['*']){
+    async find(table, conditions = {}, orderBy = null, projection = ['*']){
 
         let whereCLause = '';
         let params = [];
@@ -15,9 +15,13 @@ class DataControl{
         }
 
         const columns = projection.length > 1 ? projection.join(', ') : projection[0] || '*';
-        const dml = `SELECT ${columns} FROM ${table} ${whereCLause} ORDER BY ${orderBy}`;
+        
+        const ordered = `SELECT ${columns} FROM ${table} ${whereCLause} ORDER BY ${orderBy}`;
+        const unordered = `SELECT ${columns} FROM ${table} ${whereCLause}`;
 
-        return await db.all(dml, params);
+        const dml = !!orderBy ? ordered : unordered;
+
+        return await db.allAsync(dml, params);
     }
 
     async findOne(table, conditions = {}, projection = ['*']){
@@ -35,47 +39,77 @@ class DataControl{
         const columns = projection.length > 1 ? projection.join(', ') : projection[0] || '*';
         const dml = `SELECT ${columns} FROM ${table} ${whereCLause}`;
 
-        return await db.get(dml, params);
+        console.log("FindOne DML:", dml, "\n parameters:", params);
+
+        return await db.getAsync(dml, params);
     }
 
     async findById(table, id, projection=['*']){
         const columns = projection.length > 1 ? projection.join(', ') : projection[0] || '*';
         const dml = `SELECT ${columns} FROM ${table} WHERE id = ?`;
-        return await db.get(dml, [id]);
+        return await db.getAsync(dml, [id]);
     }
 
     async create(table, data){
         const insertData = { ...data };
         if (insertData.id === null || insertData.id === undefined) delete insertData.id;
-        console.log(insertData);
         const keys = Object.keys(insertData);
         const values = Object.values(insertData);
         const placeHolders = keys.map(() => `?`).join(', ');
 
         const dml = `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${placeHolders})`;
+        console.log("Create DML:", dml);
         const result = await db.runAsync(dml, values);
 
         return { id: result.lastID, ...insertData };
 
     }
 
-    async delete(table, id){
-        await db.runAsync(`DELETE FROM ${table} WHERE id = ?`, [id]);
+    async delete(table, conditions = { id }) {
+        if (!conditions || Object.keys(conditions).length === 0) {
+            throw new Error("É necessário informar pelo menos uma condição para deletar");
+        }
+
+        const whereClause = Object.keys(conditions)
+            .map(key => `${key} = ?`)
+            .join(' AND ');
+
+        const values = Object.values(conditions);
+        const dml = `DELETE FROM ${table} WHERE ${whereClause}`;
+
+        await db.runAsync(dml, values);
         return true;
     }
 
-    async update(table, id, data = {}){
+
+    async update(table, conditions = null, data = {}) {
+        if (Object.keys(data).length === 0) {
+            throw new Error('Nenhum campo para atualizar');
+        }
+
+        if (!conditions) {
+            if (!data.id) throw new Error('Nenhuma condição de update informada e data.id não existe');
+            conditions = { id: data.id };
+        }
+
         const setClause = Object.keys(data)
-        .map(key => `${key} = ?`)
-        .join(', ');
-        
-        const values = [ ...Object.values(data), id];
+            .map(key => `${key} = ?`)
+            .join(', ');
 
-        const dml = `UPDATE ${table} SET ${setClause} WHERE id = ?`;
-        await db.runAsync(dml, values)
+        const whereClause = Object.keys(conditions)
+            .map(key => `${key} = ?`)
+            .join(' AND ');
 
-        return this.findById(table, id);
+        const values = [...Object.values(data), ...Object.values(conditions)];
+        const dml = `UPDATE ${table} SET ${setClause} WHERE ${whereClause}`;
+
+        console.log("Update DML:", dml, "\nvalues:", values);
+
+        await db.runAsync(dml, values);
+
+        return { ...conditions, ...data };
     }
+
 
 }
 

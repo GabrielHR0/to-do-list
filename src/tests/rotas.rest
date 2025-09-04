@@ -1,4 +1,14 @@
-GET http://localhost:3000/list/1
+
+GET http://localhost:3000/list/3
+
+###
+GET http://localhost:3000/list/fetch/2
+
+###
+GET http://localhost:3000/list/delete/1
+
+###
+GET http://localhost:3000/task/open/37
 
 ###
 POST http://localhost:3000/task/create
@@ -12,10 +22,40 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:3000/list/add
+Content-Type: application/json
+
+{
+  "title": "Estudar Java",
+  "description": "Ler documentação e fazer exercícios",
+  "dueDate": "2025-09-10",
+  "taskListId": 2
+}
+
+###
 POST http://localhost:3000/list/create
 Content-Type: application/json
 
 {
   "title": "Tarefas de Estudo",
-  "userId": 1
+  "userId": 2
+}
+
+###
+POST http://localhost:3000/list/rename
+Content-Type: application/json
+
+{
+  "taskListId": 2,
+  "title": "Estudar sexo"
+}
+
+###
+POST http://localhost:3000/list/remove
+Content-Type: application/json
+
+{
+  "taskId": 36,
+  "taskListId": 2
+  
 }

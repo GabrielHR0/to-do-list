@@ -1,6 +1,8 @@
 const ObjectControl = require('../database/objectControl');
 
-class TaskList extends ObjectControl{
+class TaskList extends ObjectControl {
+
+  static table = 'taskLists';
 
   constructor(title, userId) {
     super();

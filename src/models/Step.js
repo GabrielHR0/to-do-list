@@ -1,5 +1,4 @@
 const ObjectControl = require('../database/objectControl');
-
 class Step extends ObjectControl {
   constructor(id, title, status, taskId) {
     super('steps');

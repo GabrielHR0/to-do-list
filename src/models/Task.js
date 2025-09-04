@@ -15,6 +15,14 @@ class Task extends ObjectControl{
     this.taskListId = taskListId;
   }
 
+  setStatus(status = 'pending'){
+    this.status = status
+  }
+
+  setEndDate(endDate = null){
+    this.endDate = endDate
+  }
+
 
 }
 
