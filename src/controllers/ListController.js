@@ -4,8 +4,31 @@ const TaskOrder = require('../models/TaskOrder');
 const TaskController = require('./TaskController');
 const TaskList = require('../models/TaskList');
 const taskOrder = require('../models/TaskOrder');
+const Step = require('../models/Step');
 
 const ListController = {
+
+    async find(req, res){
+        try {
+            const { userId } = req.params;
+            console.log(userId);
+            const lists = await TaskList.find({ userId });
+            console.log("Lists fetched:", lists);
+            res.status(200).json(lists);
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
+    },
+
+    async all(req, res){
+        try {
+            console.log("´/list/all route accessed");
+            const lists = await TaskList.findAll();
+            res.status(200).json(lists);
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
+    },
 
     async create(req, res){
         try {
@@ -22,10 +45,12 @@ const ListController = {
         try {
             const { taskListId } = req.params
             const order = await TaskOrder.find({ taskListId });
+            console.log("Order fetched:", order);
             const tasks = []
             for (const tuple of order){
                 tasks.push(await Task.findOne({ id: tuple.taskId }));
             }
+            console.log("Tasks fetched:", tasks);
             res.status(200).json(tasks);
         } catch (error){
             res.status(500).json({error: error.message});
@@ -76,6 +101,7 @@ const ListController = {
             }
 
             await TaskOrder.delete({taskListId, taskId, position: taskOrder.position});
+            await Step.delete({taskId});
             await TaskController.deteleTask(req);
             res.status(200).json({message: "Task removed from the list"});
         } catch (error) {

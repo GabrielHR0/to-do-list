@@ -1,8 +1,8 @@
 
-GET http://localhost:3000/list/3
+PATCH http://localhost:3000/task/complete/51
 
 ###
-GET http://localhost:3000/list/fetch/2
+GET http://localhost:3000/list/fetch/3
 
 ###
 GET http://localhost:3000/list/delete/1
@@ -29,7 +29,7 @@ Content-Type: application/json
   "title": "Estudar Java",
   "description": "Ler documentação e fazer exercícios",
   "dueDate": "2025-09-10",
-  "taskListId": 2
+  "taskListId": 4
 }
 
 ###
@@ -59,3 +59,42 @@ Content-Type: application/json
   "taskListId": 2
   
 }
+
+###
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{
+  "email": "bolsonaro@gmail.com",
+  "password": "12345"
+}
+
+###
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+  "email": "bolsonaro@gmail.com",
+  "password": "12345"
+}
+
+###
+POST http://localhost:3000/auth/logout
+Content-Type: application/json
+{}
+
+###DELETE http://localhost:3000/task/deleteTask
+Content-Type: application/json
+
+{
+  "taskId": 2
+}
+
+###
+GET http://localhost:3000/task/fetchSteps/1
+
+###
+GET http://localhost:3000/list/user/2
+
+
+

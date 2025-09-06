@@ -1,12 +1,12 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const Users = require("../models/User")
+const users = require("../models/User")
 require("dotenv").config();
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = users.find(u => u.email === email);
+  const user = await users.findOne({email: email});
   if (!user) {
     return res.status(404).json({ error: "Usuário não encontrado" });
   }
@@ -22,5 +22,33 @@ exports.login = (req, res) => {
     { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
   );
 
+  console.log("Usuario logado: ", user);
+
   res.json({ auth: true, token });
+};
+
+exports.register = async (req, res) => {
+  const { email, password } = req.body;
+
+  const userExists = await users.findOne({email: email});
+  if (userExists) {
+    return res.status(400).json({ error: "E-mail já cadastrado" });
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 8);
+  const newUser = {
+    email,
+    password: hashedPassword
+  };
+
+  const result = await users.create(newUser);
+
+  res.status(201).json({
+    message: "Usuário cadastrado com sucesso",
+    user: { id: result.id, email: result.email }
+  });
+};
+
+exports.logout = (req, res) => {
+  res.json({ auth: false, token: null, message: "Logout realizado com sucesso" });
 };

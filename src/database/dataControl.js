@@ -20,8 +20,21 @@ class DataControl{
         const unordered = `SELECT ${columns} FROM ${table} ${whereCLause}`;
 
         const dml = !!orderBy ? ordered : unordered;
+        console.log("Find DML:", dml, "\n parameters:", params);
 
         return await db.allAsync(dml, params);
+    }
+
+    async findAll(table, projection = ['*'], orderBy = null) {
+        const columns = projection.length > 1 ? projection.join(', ') : projection[0] || '*';
+        
+        const ordered = `SELECT ${columns} FROM ${table} ORDER BY ${orderBy}`;
+        const unordered = `SELECT ${columns} FROM ${table}`;
+        const dml = !!orderBy ? ordered : unordered;
+
+        console.log("FindAll DML:", dml);
+
+        return await db.allAsync(dml);
     }
 
     async findOne(table, conditions = {}, projection = ['*']){

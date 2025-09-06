@@ -12,6 +12,10 @@ class Model {
         return await DataControl.findOne(this.table, conditions, projection);
     }
 
+    static async findAll(projection, orderBy = null) {
+        return await DataControl.findAll(this.table, projection, orderBy);
+    }
+
     static async findById(conditions, projection=['*']){
         return await DataControl.findOne(this.table, conditions, projection);
     }
