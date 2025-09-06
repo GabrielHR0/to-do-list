@@ -15,7 +15,7 @@ const options = {
       },
     ],
   },
-  apis: ["./routes/*.js",], // aqui você aponta para os arquivos de rotas que terão comentários
+  apis: ["./routes/*.js", "./auth/*.js", "src/**/*.js"], // aqui você aponta para os arquivos de rotas que terão comentários
 };
 
 const swaggerSpec = swaggerJSDoc(options);

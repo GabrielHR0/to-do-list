@@ -20,36 +20,7 @@ router.get('/fetchSteps/:taskId', Task.fetchSteps);
  * tags:
  *   name: Tasks
  *   description: Endpoints de tarefas
- * /**
- * @swagger
- * /task/create:
- * post:
- * summary: Criar uma nova tarefa
- * tags: [Tasks]
- * requestBody:
- * required: true
- * content:
- * application/json:
- * schema:
- * type: object
- * properties:
- * title:
- * type: string
- * example: Minha Tarefa
- * description:
- * type: string
- * example: Esta é uma tarefa de exemplo
- * userId:
- * type: string
- * example: 123456
- * responses:
- * 201:
- * description: Tarefa criada com sucesso
- * 400:
- * description: Dados inválidos
- * 500:
- * description: Erro no servidor
- * /**
+ * 
  * @swagger
  * /task/complete/{taskId}:
  * patch:
